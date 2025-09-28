@@ -1,87 +1,115 @@
+
 import React from "react";
 import { Stack, router } from "expo-router";
-import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
-// Components
+import { ScrollView, Pressable, StyleSheet, View, Text } from "react-native";
 import { IconCircle } from "@/components/IconCircle";
 import { IconSymbol } from "@/components/IconSymbol";
-import { BodyScrollView } from "@/components/BodyScrollView";
 import { Button } from "@/components/button";
-// Constants & Hooks
-import { backgroundColors } from "@/constants/Colors";
+import { colors, commonStyles } from "@/styles/commonStyles";
 
 const ICON_COLOR = "#007AFF";
 
 export default function HomeScreen() {
-
-  const modalDemos = [
+  const studyAreas = [
     {
-      title: "Standard Modal",
-      description: "Full screen modal presentation",
-      route: "/modal",
+      title: "Mathematics",
+      description: "Algebra, Geometry, Calculus",
+      emoji: "📐",
+      route: "/subjects/mathematics",
       color: "#007AFF",
+      progress: 75,
     },
     {
-      title: "Form Sheet",
-      description: "Bottom sheet with detents and grabber",
-      route: "/formsheet",
+      title: "Science",
+      description: "Physics, Chemistry, Biology",
+      emoji: "🔬",
+      route: "/subjects/science",
       color: "#34C759",
+      progress: 60,
     },
     {
-      title: "Transparent Modal",
-      description: "Overlay without obscuring background",
-      route: "/transparent-modal",
+      title: "Languages",
+      description: "English, Literature, Writing",
+      emoji: "📚",
+      route: "/subjects/languages",
       color: "#FF9500",
+      progress: 85,
+    },
+    {
+      title: "History",
+      description: "World History, Geography",
+      emoji: "🏛️",
+      route: "/subjects/history",
+      color: "#AF52DE",
+      progress: 45,
+    },
+    {
+      title: "Computer Science",
+      description: "Programming, Algorithms",
+      emoji: "💻",
+      route: "/subjects/computer-science",
+      color: "#FF3B30",
+      progress: 90,
+    },
+    {
+      title: "Art & Music",
+      description: "Creative Arts, Music Theory",
+      emoji: "🎨",
+      route: "/subjects/arts",
+      color: "#FF2D92",
+      progress: 30,
     }
   ];
 
-  const renderModalDemo = ({ item }: { item: typeof modalDemos[0] }) => (
-    <View style={styles.demoCard}>
-      <View style={[styles.demoIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name="square.grid.3x3" color="white" size={24} />
+  const renderStudyArea = (item: typeof studyAreas[0], index: number) => (
+    <Pressable
+      key={item.route}
+      style={[styles.studyCard, { borderLeftColor: item.color }]}
+      onPress={() => router.push(item.route as any)}
+    >
+      <View style={styles.cardHeader}>
+        <IconCircle
+          emoji={item.emoji}
+          backgroundColor={item.color + "20"}
+          size={50}
+        />
+        <View style={styles.cardContent}>
+          <Text style={styles.cardTitle}>{item.title}</Text>
+          <Text style={styles.cardDescription}>{item.description}</Text>
+        </View>
+        <View style={styles.progressContainer}>
+          <Text style={styles.progressText}>{item.progress}%</Text>
+          <View style={styles.progressBar}>
+            <View 
+              style={[
+                styles.progressFill, 
+                { 
+                  width: `${item.progress}%`,
+                  backgroundColor: item.color 
+                }
+              ]} 
+            />
+          </View>
+        </View>
       </View>
-      <View style={styles.demoContent}>
-        <Text style={styles.demoTitle}>{item.title}</Text>
-        <Text style={styles.demoDescription}>{item.description}</Text>
-      </View>
-      <Button
-        variant="outline"
-        size="sm"
-        onPress={() => router.push(item.route as any)}
-      >
-        Try It
-      </Button>
-    </View>
-  );
-
-  const renderEmptyList = () => (
-    <BodyScrollView contentContainerStyle={styles.emptyStateContainer}>
-      <IconCircle
-        emoji=""
-        backgroundColor={
-          backgroundColors[Math.floor(Math.random() * backgroundColors.length)]
-        }
-      />
-    </BodyScrollView>
+    </Pressable>
   );
 
   const renderHeaderRight = () => (
     <Pressable
-      onPress={() => {console.log("plus")}}
+      onPress={() => router.push("/profile")}
       style={styles.headerButtonContainer}
     >
-      <IconSymbol name="plus" color={ICON_COLOR} />
+      <IconSymbol name="person.circle" color={ICON_COLOR} />
     </Pressable>
   );
 
   const renderHeaderLeft = () => (
     <Pressable
-      onPress={() => {console.log("gear")}}
+      onPress={() => router.push("/settings")}
       style={styles.headerButtonContainer}
     >
-      <IconSymbol
-        name="gear"
-        color={ICON_COLOR}
-      />
+      <IconSymbol name="gear" color={ICON_COLOR} />
     </Pressable>
   );
 
@@ -89,20 +117,63 @@ export default function HomeScreen() {
     <>
       <Stack.Screen
         options={{
-          title: "Building the app...",
+          title: "Study Hub",
           headerRight: renderHeaderRight,
           headerLeft: renderHeaderLeft,
         }}
       />
       <View style={styles.container}>
-        <FlatList
-          data={modalDemos}
-          renderItem={renderModalDemo}
-          keyExtractor={(item) => item.route}
-          contentContainerStyle={styles.listContainer}
-          contentInsetAdjustmentBehavior="automatic"
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
-        />
+        >
+          <View style={styles.welcomeSection}>
+            <Text style={styles.welcomeTitle}>Welcome back!</Text>
+            <Text style={styles.welcomeSubtitle}>
+              Continue your learning journey
+            </Text>
+          </View>
+
+          <View style={styles.quickStatsContainer}>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>6</Text>
+              <Text style={styles.statLabel}>Subjects</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>24</Text>
+              <Text style={styles.statLabel}>Lessons</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statNumber}>67%</Text>
+              <Text style={styles.statLabel}>Average</Text>
+            </View>
+          </View>
+
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Study Areas</Text>
+          </View>
+
+          <View style={styles.studyAreasContainer}>
+            {studyAreas.map((item, index) => renderStudyArea(item, index))}
+          </View>
+
+          <View style={styles.actionButtonsContainer}>
+            <Button
+              variant="primary"
+              onPress={() => router.push("/quiz")}
+              style={styles.actionButton}
+            >
+              Take Quiz
+            </Button>
+            <Button
+              variant="outline"
+              onPress={() => router.push("/flashcards")}
+              style={styles.actionButton}
+            >
+              Flashcards
+            </Button>
+          </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -111,71 +182,126 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f9fa',
   },
-  headerSection: {
+  scrollContainer: {
+    paddingBottom: 100,
+  },
+  welcomeSection: {
     padding: 20,
-    paddingBottom: 16,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
+    paddingTop: 10,
   },
-  headerTitle: {
-    fontSize: 24,
+  welcomeTitle: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    color: '#1a1a1a',
+    marginBottom: 4,
   },
-  headerSubtitle: {
+  welcomeSubtitle: {
     fontSize: 16,
     color: '#666',
-    lineHeight: 22,
   },
-  listContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+  quickStatsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    gap: 12,
   },
-  demoCard: {
+  statCard: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 3,
-    elevation: 2,
+    elevation: 1,
   },
-  demoIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  demoContent: {
-    flex: 1,
-  },
-  demoTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007AFF',
     marginBottom: 4,
   },
-  demoDescription: {
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+  sectionHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  studyAreasContainer: {
+    paddingHorizontal: 20,
+    gap: 12,
+  },
+  studyCard: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 16,
+    borderLeftWidth: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardContent: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  cardDescription: {
     fontSize: 14,
     color: '#666',
-    lineHeight: 18,
   },
-  emptyStateContainer: {
-    alignItems: "center",
-    gap: 8,
-    paddingTop: 100,
+  progressContainer: {
+    alignItems: 'flex-end',
+    minWidth: 60,
+  },
+  progressText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#007AFF',
+    marginBottom: 4,
+  },
+  progressBar: {
+    width: 50,
+    height: 4,
+    backgroundColor: '#e5e5e5',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  actionButtonsContainer: {
+    paddingHorizontal: 20,
+    marginTop: 30,
+    gap: 12,
+  },
+  actionButton: {
+    width: '100%',
   },
   headerButtonContainer: {
-    padding: 6, // Just enough padding around the 24px icon
+    padding: 6,
   },
 });
